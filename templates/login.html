@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+  {% include "header.html" %}
+  {% block body %}
+
+<style>
+  @media (max-width: 500px) {
+
+    #column-left {
+      width: 60% !important;
+     }
+
+  }
+</style>
+<div class="container">
+  <ul class="breadcrumb">
+    <li><a href="{{ url_for('index') }}"><i class="fa fa-home"></i></a></li>
+    <li><a href="#">Account</a></li>
+    <li><a href="{{ url_for('auth') }}">Login</a></li>
+  </ul>
+  <div class="row">
+    <div class="col-sm-3 column-left" id="column-left">
+      <div class="column-block">
+        <div class="columnblock-title">Account</div>
+        <div class="account-block">
+          <div class="list-group"> 
+            <a class="list-group-item" href="{{ url_for('auth') }}">Login</a>
+            <a class="list-group-item" href="{{ url_for('registration') }}">Register</a> 
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-9" id="content">
+      {% with messages = get_flashed_messages() %}
+            {% if messages %}
+              {% for message in messages %}
+              <div class="alert alert-success text-center">
+                      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;
+                      </button>
+                  <strong>{{ message }}</strong>
+              </div>
+              {% endfor %}
+            {% endif %}
+          {% endwith %}
+      <div class="row">
+        <div class="col-sm-6">
+          <div class="well">
+            <h2>New Customer</h2>
+            <p><strong>Register Account</strong></p>
+            <p>By creating an account you will be able to shop faster, be up to date on an order's status, and keep track of the orders you have previously made.</p>
+            <a class="btn btn-primary" href="{{ url_for('registration') }}">Continue</a></div>
+        </div>
+        <div class="col-sm-6">
+          <div class="well">
+            <h2>Returning Customer</h2>
+            <p><strong>I am a returning customer</strong></p>
+            <form enctype="multipart/form-data" method="post" action="">
+              <div class="form-group">
+                <label for="input-email" class="control-label">E-Mail Address</label>
+                <input type="text" class="form-control" id="input-email" placeholder="E-Mail Address" value="" name="email">
+              </div>
+              <div class="form-group">
+                <label for="input-password" class="control-label">Password</label>
+                <input type="password" class="form-control" id="input-password" placeholder="Password" value="" name="password">
+                <a href="#">Forgotten Password</a></div>
+                <input type="submit" class="btn btn-primary" value="Login">
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+{% endblock %}
+{% include "footer.html" %}
+</html>

@@ -1,0 +1,111 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="/static/css/profile_style.css">
+    </head>
+    {% include "header.html" %}
+    {% block body %}
+    <body>
+        <br>
+        <div class="container mt-5">
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    {% for message in messages %}
+                    <div class="alert alert-success text-center">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;
+                            </button>
+                        <strong>{{ message }}</strong>
+                    </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            <div class="row">
+                <div class="col-lg-4 pb-5">
+                    <!-- Account Sidebar-->
+                    <div class="author-card pb-3">
+                        <div class="author-card-cover" style="background-image: url(https://demo.createx.studio/createx-html/img/widgets/author/cover.jpg);"></div>
+                        <div class="author-card-profile">
+                            <div class="author-card-avatar zoom"><img loading="lazy" src="{{ user_details[0] }}">
+                            </div>
+                            <div class="author-card-details">
+                                <h5 class="author-card-name text-lg">{{ user_details[1] }}</h5><span class="author-card-position">{{ user_details[5] }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="wizard">
+                        <nav class="list-group list-group-flush">
+                            {% if user_details[5] == 'Buyer' %}
+                            <a class="list-group-item" href="{{ url_for('history') }}">
+                            {% elif user_details[5] == 'Delivery Agent' %}
+                            <a class="list-group-item" href="{{ url_for('delivery') }}">
+                            {% else %}
+                            <a class="list-group-item" href="{{ url_for('producehistory') }}">
+                            {% endif %}
+                                <div class="d-flex justify-content-between align-items-center">
+                                        {% if user_details[5] == 'Buyer' %}
+                                            <div class="d-inline-block font-weight-medium text-uppercase">Orders List</div>
+                                        {% elif user_details[5] == 'Delivery Agent' %}
+                                            <div class="d-inline-block font-weight-medium text-uppercase">Orders List</div>
+                                        {% else %}
+                                            <div class="d-inline-block font-weight-medium text-uppercase">Produce List</div>
+                                        {% endif %}
+                                </div>
+                            </a>
+                            <a class="list-group-item active" href="#">Profile Settings</a>
+                            <a class="list-group-item" href="{{ url_for('updatepassword') }}">Update Password</a>
+                        </nav>
+                    </div>
+                </div>
+                <!-- Profile Settings-->
+                <div class="col-lg-8 pb-5">
+                    <form class="row" method="POST" enctype="multipart/form-data" action="{{ url_for('profile') }}">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="account-fn">First name</label>
+                                <input class="form-control" type="text" id="account-fn" name="first_name" value="{{ user_details[1].split()[0] }}">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="account-ln">Last name</label>
+                                <input class="form-control" type="text" id="account-ln" name="last_name" value="{{ ''.join(user_details[1].split()[1:]) }}">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="account-email">Email Address</label>
+                                <input class="form-control" type="email" id="account-email" value="{{ user_details[2] }}" disabled="">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="account-phone">Phone No.</label>
+                                <input class="form-control" type="text" id="account-phone" name="phone" value="{{ user_details[3] }}">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="account-phone">Permanent Address</label>
+                                <input class="form-control" id="account-phone" name="address" value="{{ user_details[4] }}">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="account-phone">Profile Image</label>
+                                <input class="form-control" type="file" name="image" id="account-phone">
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <hr class="mt-2">
+                            <div class="d-flex flex-wrap justify-content-between align-items-center">
+                                <button class="btn btn-style-1 btn-primary pull-left" type="submit" >Update Profile</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- data-toast="" data-toast-position="topRight" data-toast-type="success" data-toast-icon="fe-icon-check-circle" data-toast-title="Success!" data-toast-message="Your profile updated successfuly." -->
+    </body>
+    {% endblock %}
+    {% include "footer.html" %}
+</html>

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+{% include "header.html" %}
+{% block body %}
+</body>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Bootstrap Order Details Table with Search Filter</title>
+	<link rel="stylesheet" href="/static/css/order_history_style.css">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link href="/static/css/bootstrap-iso.css" rel="stylesheet">
+	<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script> -->
+	<script>
+		$(document).ready(function(){
+			$("#search").on("keyup", function() {
+				var value = $(this).val().toLowerCase();
+				$("#order_details tr").filter(function() {
+					$(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+				});
+			});
+			$("#location").change(function() {
+				var value = $(this).children("option:selected").text().toLowerCase();
+				$("#order_details tr").filter(function() {
+					if(value == "all"){
+						$(this).toggle(true)
+					} else {
+						$(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+					}
+				});
+			});
+			$("#status").change(function() {
+				var value = $(this).children("option:selected").text().toLowerCase();
+				$("#order_details tr").filter(function() {
+					if(value == "any"){
+						$(this).toggle(true)
+					} else {
+						$(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+					}
+				});
+			});
+		});
+	</script>
+	<script type="text/javascript">
+	$(document).ready(function(){
+		$('[data-toggle="tooltip"]').tooltip();
+	});
+	</script>
+	<style>
+		@media (max-width: 500px) {
+	
+			.table-filter .filter-group{
+				float: none;
+				margin-left: 0px;
+			}
+		}
+	</style>
+</head>
+<body>
+	<style>
+	
+		@media (max-width: 500px) {
+	
+			.table-filter .filter-group{
+				float: none;
+				margin-left: 0px;
+			}
+
+		}
+	</style>
+	<div class="bootstrap-iso">
+		<div class="table-wrapper container">
+			{% with messages = get_flashed_messages() %}
+				{% if messages %}
+					{% for message in messages %}
+					<div class="alert alert-success text-center">
+							<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;
+							</button>
+						<strong>{{ message }}</strong>
+					</div>
+					<br>
+					<br>
+					{% endfor %}
+				{% endif %}
+			{% endwith %}
+			<div class="table-title" style="margin: 0%;">
+				<div class="row">
+					<div class="col-sm-6" style="padding: 0%; padding-left: 15px;">
+						<h3 style="margin: 0%;">Order <b>Details</b></h3>
+					</div>
+				</div>
+			</div>
+			<div class="table-filter">
+				<div class="row">
+					<div class="col-sm-12">
+						<span class="filter-icon"><i class="fa fa-filter"></i></span>
+						<div class="filter-group">
+							<label>Search Any Field</label>
+							<input type="text" class="form-control" id="search" placeholder="Search here" autocomplete="off">
+						</div>
+						<div class="filter-group">
+							<label>Location</label>
+							<select class="form-control" id="location">
+								<option>All</option>
+								<option>{{perm_address}}</option>
+								{% for addr in buyer_address %}
+								<option>{{addr[0]}}</option>
+								{% endfor %}					
+							</select>
+						</div>
+						<div class="filter-group">
+							<label>Status</label>
+							<select class="form-control" id="status">
+								<option>Any</option>								
+								<option>Delivered</option>
+								<option>Shipping</option>
+								<option>Pending</option>
+							</select>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="table-responsive">
+				<table class="table table-hover table-bordered">
+					<thead>
+						<tr>
+							<th>#</th>
+							<th>Order Image</th>
+							<th>Order Name</th>
+							<th>Order Date</th>
+							<th>Farmer Name</th>
+							<th>Delivery Status</th>
+							<th>Order Quantity</th>
+							<th>Order Price</th>
+							<th>Shipping Address</th>											
+						</tr>
+					</thead>
+					<tbody id="order_details">
+						{% for item in purchased_items %}
+							<tr>
+								<td>{{loop.index}}</td>
+								<td><a href="{{item[0]}}"><img loading="lazy" src="{{item[0]}}" style="height: 60px; width: 80px;" class="img-thumbnail" alt="Avatar"></a></td>
+								<td><span class="text-center"></span>{{item[1]}}</td>
+								<td>{{item[2]}}</td>
+								<td>{{item[3]}}</td>
+								<td><span class="status text-success">&bull;</span>{{item[4]}}</td>                        
+								<td>{{item[5]}} Kg</td>
+								<td>{{item[6]}}</td>
+								<td>{{item[7]}}</td>
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>  
+</body>
+{% endblock %}
+{% include "footer.html" %}
+</html>                                		                            

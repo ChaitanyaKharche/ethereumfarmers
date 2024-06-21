@@ -1,0 +1,261 @@
+<head>
+    <title>Fresh Food</title><meta http-equiv="content-type" content="text/html;charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="e-commerce site well design with responsive view.">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="theme-color" content="#7eb432">
+    <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen" />
+    <link href="/static/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+    <link href='https://fonts.googleapis.com/css?family=Work+Sans:100,300,400,500,700,900&display=swap' rel='stylesheet' type='text/css'>
+    <link href="/static/css/stylesheet.css" rel="stylesheet">
+    <link href="/static/css/responsive.css" rel="stylesheet">
+    <link href="/static/owl-carousel/owl.carousel.css" type="text/css" rel="stylesheet" media="screen" />
+    <link href="/static/owl-carousel/owl.transitions.css" type="text/css" rel="stylesheet" media="screen" />
+    <script src="/static/javascript/jquery-2.1.1.min.js" ></script>
+    <script src="/static/bootstrap/js/bootstrap.min.js" ></script>
+    <script src="/static/javascript/jstree.min.js"></script>
+    <script src="/static/javascript/template.js"></script>
+    <script src="/static/javascript/common.js"></script>
+    <script src="/static/javascript/global.js"></script>
+    <script src="/static/owl-carousel/owl.carousel.min.js"></script>
+    <script src="/static/javascript/lazysizes.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+    integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+    crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+     integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+     crossorigin="" async>
+    </script>
+    <link rel="manifest" href="/static/manifest.json"/>
+    
+    <!-- iOS -->
+    <link rel="apple-touch-icon"                       href="{{ url_for('static', filename='icons/icon-96.png') }}">
+    <meta name="apple-mobile-web-app-capable"          content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection"                      content="telephone=no">
+    
+</head>
+
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker
+    .register('/service-worker.js')
+    .then(function(registration) {
+        console.log('Service Worker Registered!');
+        return registration;
+    })
+    .catch(function(err) {
+        console.error('Unable to register service worker.', err);
+    });
+  }
+  $(document).ready(function (){
+    $('img').each(function(){
+      $(this).addClass("lazyload");
+    });
+  });
+</script>
+<style>
+  video {
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+</style>
+<body class="cart col-2">
+  <div class="preloader loader" style="background:#f2f2f2;text-align:center">
+    <video autoplay loop muted inline height="100px" style="width:30%; height:30%">
+      <source src="/static/image/loader.mp4" type="video/mp4">
+    </video>
+  </div>
+  <div class="bdyy">
+    <header>
+      <div class="container">
+        <div class="header-inner">
+          <div class="col-sm-4 col-xs-6 header-left">
+            <div class="shipping">
+              <div class="shipping-img"></div>
+              <div class="shipping-text">&nbsp;+91 987-654-3210<br><span class="shipping-detail">Week From 9:00am To 7:00pm</span></div>
+            </div>
+          </div>
+          <div class="col-sm-4 col-xs-12 header-middle">
+            <div class="header-middle-top">
+              <div id="logo"> <a href="{{url_for('index')}}"><img loading="lazy" src="/static/image/logo1.png" title="E-Commerce" alt="E-Commerce" class="img-responsive" /></a> </div>
+            </div>
+          </div>
+          <div class="col-sm-4 col-xs-12 header-right">
+            {% if session['role'] == 'Buyer' %}
+            <div id="cart" class="btn-group btn-block">
+              <button type="button" class="btn btn-inverse btn-block btn-lg dropdown-toggle cart-dropdown-button"> <span id="cart-total"><span class="cart-title">Shopping Cart</span><br>
+              {{ number }} item(s) - {{ '%0.2f'| format(subtotal*1.2|float) }} Rs.</span> </button>
+              <ul class="dropdown-menu pull-right cart-dropdown-menu">
+                {% for item in items %}
+                <li>
+                  <table class="table table-striped">
+                    <tbody>
+                      <tr>
+                        <td class="text-center"><a href="{{url_for('product', produce_id = item[5])}}"><img loading="lazy" style="height: 45px; width: px" class="img-thumbnail" title="Product Image" alt="Product Image" src="{{item[4]}}"></a></td>
+                        <td class="text-left"><a href="{{url_for('product', produce_id = item[5])}}">{{ item[3] }}</a></td>
+                        <td class="text-right">x{{ '%0.2f'| format(item[1]|float) }} Rs.</td>
+                        <td class="text-right">{{ '%0.2f'| format(item[1]*item[2]|float) }} Rs.</td>
+                        <form action="{{ url_for('item') }}" method="post">
+                          <input type="hidden" value="cart" name="endpoint">
+                            <input type="hidden" value="{{ item[0] }}" name="item_id">
+                            <td class="text-center"><button class="btn btn-danger btn-xs" data-toggle="tooltip" value="delete" name="type" data-original-title="Remove" type="submit"><i class="fa fa-times"></i></button></td>
+                        </form>
+                      </tr>
+                    </tbody>
+                  </table>
+                </li>
+                {% endfor %}
+                <li>
+                  <div>
+                    <table class="table table-bordered">
+                      <tbody>
+                        <tr>
+                          <td class="text-right"><strong>Sub-Total</strong></td>
+                          <td class="text-right">{{ '%0.2f'| format(subtotal|float) }} Rs.</td>
+                        </tr>
+                        <tr>
+                          <td class="text-right"><strong>GST (20%)</strong></td>
+                          <td class="text-right">{{ '%0.2f'| format(subtotal*0.2|float) }} Rs.</td>
+                        </tr>
+                        <tr>
+                          <td class="text-right"><strong>Total</strong></td>
+                          <td class="text-right">{{ '%0.2f'| format(subtotal*1.2|float) }} Rs.</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <p class="text-right"> 
+                      <span class="btn-viewcart"><a href="{{ url_for('cart') }}"><strong><i class="fa fa-shopping-cart"></i> View Cart</strong></a></span> 
+                      <span class="btn-checkout"><a href="{{ url_for('checkout') }}"><strong><i class="fa fa-share"></i> Checkout</strong></a></span> 
+                    </p>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            {% elif not session.get('email', false) %}
+              <ul>
+                <li><a href="{{url_for('registration')}}"><input type="button" class="btn btn-primary" data-loading-text="Loading..." value="Register" style="margin-bottom:8px;"></a></li>
+                <li><a href="{{url_for('auth')}}"><input type="button" class="btn btn-primary" data-loading-text="Loading..."  value="  Login   " style="margin-bottom:8px;"></a></li>
+              </ul>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </header>
+    {% if session['role'] == 'Buyer' %}
+    <nav id="menu" class="navbar">
+        <div class="nav-inner container">
+            <div class="navbar-header"><span id="category" class="visible-xs">Menu</span>
+                <button type="button" class="btn btn-navbar navbar-toggle" ><i class="fa fa-bars"></i></button>
+            </div>
+            <div class="navbar-collapse">
+                <ul class="main-navigation">
+                    <li><a href="{{url_for('index')}}" class="parent"  >Home</a> </li>
+                    <li><a href="#" class="active parent" class="parent">Categories</a>
+                      <ul>
+                        <li><a href="{{url_for('category', category='fruits')}}">Fruits</a> </li>
+                        <li><a href="{{url_for('category', category='grains')}}">Grains</a> </li>
+                        <li><a href="{{url_for('category', category='pulses')}}">Pulses</a> </li>
+                        <li><a href="{{url_for('category', category='spices')}}">Spices</a> </li>
+                        <li><a href="{{url_for('category', category='vegetables')}}">Vegetables</a> </li>                            
+                      </ul>
+                  </li>
+                    <li><a href="{{url_for('cart')}}" class="parent">Cart </a></li>
+                    <li><a href="{{url_for('checkout')}}" class="parent">Checkout </a></li>
+                    <li><a href="{{url_for('history')}}" class="parent">Order History </a></li>
+                    <li><a href="#" class="active parent">Account</a>
+                      <ul>
+                        <li><a href="{{ url_for('profile') }}" >My Profile</a></li>
+                        <li><a href="{{ url_for('updatepassword') }}" >Update Password</a> </li>
+                        <li><a href="{{ url_for('logout') }}" >Logout</a></li>
+                      </ul>
+                    </li>
+                    <li><a href="#" class="active parent">More</a>
+                      <ul>
+                        <li><a href="{{url_for('about')}}" >About Us</a></li>
+                        <li><a href="{{url_for('contact')}}" >Contact Us</a> </li>
+                      </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    {% elif session['role'] == 'Farmer' %}
+    <nav id="menu" class="navbar">
+      <div class="nav-inner container">
+          <div class="navbar-header"><span id="category" class="visible-xs">Menu</span>
+              <button type="button" class="btn btn-navbar navbar-toggle" ><i class="fa fa-bars"></i></button>
+          </div>
+          <div class="navbar-collapse">
+              <ul class="main-navigation">
+                <li><a href="{{url_for('add_produce')}}" class="parent">Add Produce</a> </li>
+                <li><a href="{{ url_for('producehistory') }}" class="parent">Produce History</a></li>
+                <li><a href="#" class="active parent" class="parent">Account</a>
+                  <ul>
+                    <li><a href="{{ url_for('profile') }}" >My Profile</a></li>
+                    <li><a href="{{ url_for('updatepassword') }}" >Update Password</a> </li>
+                    <li><a href="{{ url_for('logout') }}" >Logout</a></li>
+                  </ul>
+                </li>
+                <li><a href="#" class="active parent">More</a>
+                  <ul>
+                    <li><a href="{{url_for('about')}}" >About us</a></li>
+                    <li><a href="{{url_for('contact')}}" >Contact Us</a> </li>
+                  </ul>
+                </li>
+              </ul>
+          </div>
+      </div>
+    </nav>
+    {% elif session['role'] == 'Delivery Agent' %}
+    <nav id="menu" class="navbar">
+      <div class="nav-inner container">
+          <div class="navbar-header"><span id="category" class="visible-xs">Menu</span>
+              <button type="button" class="btn btn-navbar navbar-toggle" ><i class="fa fa-bars"></i></button>
+          </div>
+          <div class="navbar-collapse">
+              <ul class="main-navigation">
+                  <li><a href="{{url_for('delivery')}}">Delivery Status</a></li>
+                  <li><a href="#" class="active parent">Account</a>
+                    <ul>
+                      <li><a href="{{ url_for('profile') }}" >My Profile</a></li>
+                      <li><a href="{{ url_for('updatepassword') }}" >Update Password</a></li>
+                      <li><a href="{{ url_for('logout') }}" >Logout</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="#" class="active parent">More</a>
+                    <ul>
+                      <li><a href="{{url_for('about')}}" >About us</a></li>
+                      <li><a href="{{url_for('contact')}}" >Contact Us</a> </li>
+                    </ul>
+                  </li>
+              </ul>
+          </div>
+      </div>
+    </nav>
+    {% else %}
+    <nav id="menu" class="navbar">
+      <div class="nav-inner container">
+          <div class="navbar-header"><span id="category" class="visible-xs">Menu</span>
+              <button type="button" class="btn btn-navbar navbar-toggle" ><i class="fa fa-bars"></i></button>
+          </div>
+          <div class="navbar-collapse">
+              <ul class="main-navigation">
+                  <li><a href="{{url_for('index')}}" class="parent">Home</a> </li>
+                  <li><a href="{{url_for('category', category='fruits')}}" class="parent">Fruits</a> </li>
+                  <li><a href="{{url_for('category', category='grains')}}" class="parent">Grains</a> </li>
+                  <li><a href="{{url_for('category', category='pulses')}}" class="parent">Pulses</a> </li>
+                  <li><a href="{{url_for('category', category='spices')}}" class="parent">Spices</a> </li>
+                  <li><a href="{{url_for('category', category='vegetables')}}" class="parent">Vegetables</a> </li>                            
+                  <li><a href="#" class="active parent">More</a>
+                    <ul>
+                      <li><a href="{{url_for('about')}}" >About Us</a></li>
+                      <li><a href="{{url_for('contact')}}" >Contact Us</a> </li>
+                    </ul>
+                  </li>
+              </ul>
+          </div>
+      </div>
+    </nav>
+    {% endif %}

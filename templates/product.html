@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+{% include "header.html" %}
+{% block body %}
+<div class="container">
+  <ul class="breadcrumb">
+    <li><a href="{{url_for('index')}}"><i class="fa fa-home"></i></a></li>
+    <li><a href="{{url_for('category',category = data[7])}}"> Categories </a></li>
+    <li><a href="#">Product Specifications</a></li>
+  </ul>
+  <div class="row">
+    <div id="column-left" class="col-sm-3 hidden-xs column-left">
+      <div class="column-block">
+        <div class="column-block">
+          <div class="columnblock-title">Categories</div>
+          <div class="category_block">
+            <ul class="box-category treeview-list treeview">
+              {% for i in categories %}
+                <li><a href="{{url_for('category',category=i[0])}}">{{ i[0] }}</a></li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+        <h3 class="productblock-title">Latest</h3>
+        <div class="row latest-grid product-grid">
+          {% for li in latestitems %}
+          <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 product-grid-item">
+            <div class="product-thumb transition">
+              <div class="image product-imageblock">
+              <a href="{{ url_for('product', produce_id = li[3]) }}">
+              <img loading="lazy" src="{{ li[2] }}" style="height: 45px; width: 60px;" alt="{{ li[0] }}" title="{{ li[0] }}" class="img-responsive" />
+              </a>
+              </div>
+              <div class="caption product-detail">
+                <h4 class="product-name">
+                <a href="{{ url_for('product', produce_id = li[3]) }}" title="{{ li[0] }}">{{ li[0] }}</a>
+                </h4>
+                <p class="price product-price">{{ li[1] }} Rs.</p>
+                <h4 class = "product-name">{{ li[4] }}</h4>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    {% for message in messages %}
+                    <div class="alert alert-success text-center">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;
+                            </button>
+                        <strong>{{ message }}</strong>
+                    </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+    <div id="content" class="col-sm-9">
+      <div class="row">
+        <div class="col-sm-6">
+          <div class="thumbnails">
+            <div><a class="thumbnail" href="{{ data[8] }}" title="{{ data[0] }}"><img loading="lazy" src="{{ data[8] }}" style="height: 300px;" title="{{ data[0] }}" alt="{{ data[0] }}" /></a></div>
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <h1 class="productpage-title">{{ data[0] }}</h1>
+          <div class="rating product"> 
+            <hr>
+            <div class="addthis_toolbox addthis_default_style"><a class="addthis_button_facebook_like" ></a> <a class="addthis_button_tweet"></a> <a class="addthis_button_pinterest_pinit"></a> <a class="addthis_counter addthis_pill_style"></a></div>
+          </div>
+          <ul class="list-unstyled productinfo-details-top">
+            <li>
+              <h2 class="productpage-price">Product Rate : {{ data[1] }} Rs.</h2>
+            </li>
+          </ul>
+          <hr>
+          <ul class="list-unstyled product_info">
+            <li>
+              <label>Farmer : </label>
+              <span> {{ data[2] }}</span></li>
+            <li>
+              <label>ProductCode: </label>
+              <span>{{ data[3] }}</span></li>
+            <li>
+              <label>Availability: </label>
+              <span> {{ data[4] }} Kg Available</span></li>
+          </ul>
+          <hr>
+            <ul>
+              <li>
+                <label>Farm Location : </label>
+                <span>{{ data[5] }}</span>
+              </li>
+              <li>
+                <label>Farmer contact : </label>
+                <span>{{ data[6] }}</span>
+              </li>
+              
+            </ul>
+          <hr>
+          <div id="product">
+            <div class="form-group">
+              <form action="{{ url_for('item') }}" method="POST">
+                <label class="control-label qty-label" for="input-quantity">Select Quantity</label>
+                <input type="hidden" name="produce_id" value="{{ data[3] }}">
+                <input type="number" name="quantity" value="1" min="1" max="{{ data[4] }}" id="input-quantity" class="form-control" style="height: 35px; width: auto;"/>
+                <div class="btn-group">
+                  <button type="submit" name="type" value="add" id="button-cart" data-loading-text="Loading..." class="btn btn-primary btn-lg addtocart">Add to Cart</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="productinfo-tab">
+        <ul class="nav nav-tabs">
+          <li class="active"><a href="#tab-description" data-toggle="tab">Description</a></li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="tab-description">
+            <div class="cpt_product_description ">
+                <h5>{{ data[9] }}</h5>
+            </div>
+        </div>
+      </div>
+      <h3 class="productblock-title">Related Products</h3>
+      <div class="box">
+        <div id="related-slidertab" class="row owl-carousel product-slider">
+        {% for ri in relateditems %}
+          <div class="item">
+            <div class="product-thumb transition">
+              <div class="image product-imageblock"> <a href="{{ url_for('product', produce_id = ri[3]) }}"> <img loading="lazy" src="{{ ri[2] }}" style="height : 150px; width : 200px" alt="{{ ri[0] }}" title="{{ ri[0] }}" class="img-responsive" /> </a>
+              </div>
+              <div class="caption product-detail">
+                <h4 class="product-name"><a href="{{ url_for('product', produce_id = ri[3]) }}" title="{{ ri[0] }}">{{ ri[0] }}</a></h4>
+                <span class="price product-price">{{ ri[1] }} Rs.</span><br>
+                <h4 class = "product-name">{{ ri[4] }}</h4>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+</div>
+</body>
+{% endblock %}
+{% include "footer.html" %}
+</html>
+

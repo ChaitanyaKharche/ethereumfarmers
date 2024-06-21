@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+{% include "header.html" %}
+</body>
+
+<script>
+  function func1(){
+    alert("Add items in the cart to checkout");
+  }
+</script>
+
+{% block body %}
+
+<body style = "color: black;">
+<div class="container">
+  <ul class="breadcrumb">
+    <li><a href="{{url_for('index')}}"><i class="fa fa-home"></i></a></li>
+    <li><a href="{{url_for('cart')}}">Shopping Cart</a></li>
+    <li><a href="{{url_for('checkout')}}">Checkout</a></li>
+  </ul>
+  <div class="row">
+    <div id="column-left" class="col-sm-3 hidden-xs column-left">
+      <div class="column-block">
+        <div class="column-block">
+          <div class="columnblock-title">Categories</div>
+          <div class="category_block">
+            <ul class="box-category treeview-list treeview">
+              {% for i in categories %}
+                <li><a href="{{url_for('category',category=i[0])}}">{{i[0]}}</a></li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-9" id="content">
+      {% with messages = get_flashed_messages() %}
+            {% if messages %}
+              {% for message in messages %}
+              <div class="alert alert-success text-center">
+                      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;
+                      </button>
+                  <strong>{{ message }}</strong>
+              </div>
+              {% endfor %}
+            {% endif %}
+          {% endwith %}
+      <h1>Checkout</h1>
+
+      <div id="accordion" class="panel-group">
+
+      <form class="form-horizontal" action="" method="POST">
+        
+        <div class="panel panel-warning">
+          <div class="panel-heading ">
+            <h4 class="panel-title" style="color: black;"><a class="accordion-toggle " data-parent="#accordion" data-toggle="collapse" href="#collapse-payment-address" aria-expanded="true" id="pa">Step 1: Billing Details <i class="fa fa-caret-down"></i></a></h4>
+          </div>
+          <div id="collapse-payment-address" role="heading" class="panel-collapse collapse in" aria-expanded="true" style="height: 0px;" name="payment_address">
+            <div class="panel-body"> 
+                <div class="form-check">
+                  <label>
+                    <input type="radio" class="form-check-input" checked="checked" value="existing_address" name="payment_address" data-id="payment-existing">
+                    I want to use an existing address</label>
+                </div>
+                <div id="payment-existing">
+                  <select class="form-control" name="address">
+                      <option selected="selected">{{user_address[0]}}</option>
+                    {% for address in buyer_address %}
+                      <option value="{{ address[0] }}">{{ address[0] }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <div class="form-check">
+                  <label>
+                    <input type="radio"  class="form-check-input" value="new_address" name="payment_address" data-id="payment-new">
+                    I want to use a new address
+                  </label>
+                </div>
+                <br>
+                <div id="payment-new" style="display: none;">
+                  
+                  <div class="form-group required">
+                    <label for="input-payment-address" class="col-sm-2 control-label">Address </label>
+                    <div class="col-sm-10">
+                      <input type="text" class="form-control" id="input-payment-address" placeholder="Address" value="" name="address_new">
+                    </div>
+                  </div>
+                 
+                  <div class="form-group required">
+                    <label for="input-payment-city" class="col-sm-2 control-label">City</label>
+                    <div class="col-sm-10">
+                      <input type="text" class="form-control" id="input-payment-city" placeholder="City" value="" name="city">
+                    </div>
+                  </div>
+
+                  <div class="form-group required">
+                    <label for="input-payment-postcode" class="col-sm-2 control-label">Post Code</label>
+                    <div class="col-sm-10">
+                      <input type="text" class="form-control" id="input-payment-postcode" placeholder="Post Code" value="" name="postcode">
+                    </div>
+                  </div>
+                  
+                  <div class="form-group required">
+                    <label for="input-payment-zone" class="col-sm-2 control-label">Region / State</label>
+                    <div class="col-sm-10">
+                      <input type="text" class="form-control" id="input-payment-state" placeholder="State" value="" name="state">
+                    </div>
+                  </div>
+                  
+                </div>
+                <div class="buttons clearfix" >
+                  <div class="pull-right" >
+                    <input type="button" class="btn btn-primary" data-loading-text="Loading..." id="button-payment-address" value="Continue" style="margin-bottom:8px;">
+                  </div>
+                </div>
+               <script >
+                $('input[name=\'payment_address\']').on('change', function() {
+                    if (this.value == 'new_address') {
+                      $('#payment-existing').hide();
+                    $('#payment-new').show();
+                  } else {
+                    $('#payment-existing').show();
+                    $('#payment-new').hide();
+                  }
+                });
+                </script>
+              <script>
+                document.getElementById("button-payment-address").onclick = function() {myFunction()};                  
+                function myFunction() {
+                  document.getElementById("collapse-payment-address").classList.toggle("collapse");
+                  document.getElementById("collapse-payment-method").classList.toggle("collapse");
+
+                }
+              </script>
+            </div>
+          </div>
+        </div>
+        <div class="panel panel-warning">
+          <div class="panel-heading ">
+            <h4 class="panel-title" style="color : black;"><a class="accordion-toggle collapsed" data-parent="#accordion" data-toggle="collapse" href="#collapse-payment-method" aria-expanded="false" id="pm">Step 2: Payment Method <i class="fa fa-caret-down"></i></a></h4>
+          </div>
+          <div id="collapse-payment-method" role="heading" class="panel-collapse collapse" aria-expanded="false" style="height: 0px;">
+            <div class="panel-body">
+              <p>Please select the preferred payment method to use on this order.</p>
+              <div class="form-check">
+                <label>
+                  <input type="radio" class="form-check-input" checked="checked" value="cash_on_delivery" name="payment_method">
+                  Cash On Delivery </label>
+              </div>
+              <div class="form-check">
+                <label>
+                  <input type="radio" class="form-check-input" value="credit_debit" name="payment_method">
+                  Pay using Debit/Credit Card </label>
+              </div>
+              <div class="form-check">
+                <label>
+                  <input type="radio" class="form-check-input" value="net_banking" name="payment_method">
+                  Net Banking </label>
+              </div>
+            <div class="buttons clearfix">
+              <div class="pull-right">
+                <input type="button" class="btn btn-primary" data-loading-text="Loading..." id="button-payment-method" value="Continue" style="margin-bottom:8px;">
+              </div>
+              <script>
+                document.getElementById("button-payment-method").onclick = function() {myFunction1()};                  
+                function myFunction1() {
+                  document.getElementById("collapse-checkout-confirm").classList.toggle("collapse");
+                }
+              </script>
+            </div>
+          </div>
+          </div>
+        </div>
+        <div class="panel panel-warning">
+          <div class="panel-heading">
+            <h4 class="panel-title" style="color : black;"><a class="accordion-toggle collapsed" data-parent="#accordion" data-toggle="collapse" href="#collapse-checkout-confirm" aria-expanded="false">Step 3: Confirm Order <i class="fa fa-caret-down"></i></a></h4>
+          </div>
+          <div id="collapse-checkout-confirm" role="heading" class="panel-collapse collapse" aria-expanded="false" style="height: 0px;">
+            <div class="panel-body">
+              <div class="table-responsive">
+                <table class="table table-bordered table-hover" style="font-size: 16px !important;">
+                  <thead>
+                    <tr>
+                      <td class="text-left"><strong>Image</strong></td>
+                      <td class="text-left"><strong>Name</strong></td>
+                      <td class="text-left"><strong>Category</strong></td>
+                      <td class="text-right"><strong>Quantity</strong></td>
+                      <td class="text-right"><strong>Unit Price</strong></td>
+                      <td class="text-right"><strong>Total</strong></td>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for item in items %}
+                      <tr>
+                        <td class="text-left"><img loading="lazy" src="{{ item[4] }}" style="height: 45px; width: 60px;"></td>
+                        <td class="text-left"><a href="{{ url_for('product', produce_id=item[5]) }}">{{ item[3] }}</a></td>
+                        <td class="text-left">{{ item[7] }}</td>
+                        <td class="text-right">{{ item[2] }}</td>
+                        <td class="text-right">{{ item[1] }}</td>
+                        <td class="text-right">{{ '%0.2f'| format(item[1]*item[2]|float) }} Rs.</td>
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                  <tfoot>
+                    <tr>
+                      <td class="text-right" colspan="5"><strong>Sub-Total:</strong></td>
+                      <td class="text-right">{{ '%0.2f'| format(subtotal|float) }} Rs.</td>
+                    </tr>
+                    <tr>
+                      <td class="text-right" colspan="5"><strong>GST (20%):</strong></td>
+                      <td class="text-right">{{ '%0.2f'| format(subtotal*0.2|float) }} Rs.</td>
+                    </tr>
+                    <tr>
+                      <td class="text-right" colspan="5"><strong>Total:</strong></td>
+                      <td class="text-right">{{ '%0.2f'| format(subtotal*1.2|float) }} Rs.</td>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+              <div class="buttons">
+                <div class="pull-right">
+                  {% if subtotal == 0 %}
+                    <input type="button" data-loading-text="Loading..." class="btn btn-primary" id="button-confirm" value="Confirm Order" onclick="func1()" style="margin-bottom:8px;">
+                  {% else %}
+                    <input type="submit" data-loading-text="Loading..." class="btn btn-primary" id="button-confirm" value="Confirm Order" style="margin-bottom:8px;" >
+                  {% endif %}
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+{% endblock %}
+{% include "footer.html" %}
+</html>

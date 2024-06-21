@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="author" content="colorlib.com">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Produce Details</title>
+    <link rel="stylesheet" href="static/fonts/material-icon/css/material-design-iconic-font.min.css">
+    <link rel="stylesheet" href="static/css/style.css">
+</head>
+{% include "header.html" %}
+{% block body %}
+
+<body>
+    <div class="main bdy">
+		{% with messages = get_flashed_messages() %}
+			{% if messages %}
+				{% for message in messages %}
+				<div class="alert alert-success text-center">
+						<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;
+						</button>
+					<strong>{{ message }}</strong>
+				</div>
+				{% endfor %}
+			{% endif %}
+		{% endwith %}
+        <div class="container">
+            <h2>Build your Product</h2>
+            <form action="{{ url_for('add_produce') }}" method="POST" id="signup-form" class="signup-form" enctype="multipart/form-data">
+                <h3>
+                    About Product
+                </h3>
+                <fieldset>
+                    <div class="form-row">
+                        <div class="form-file">
+                            <input required type="file" class="inputfile" name="produce_img" id="your_picture"  onchange="readURL(this);" data-multiple-caption="{count} files selected"/>
+                            <label for="your_picture">
+                                <figure style="border: solid;">
+                                    <img loading="lazy" src="" alt="" class="your_picture_image">
+                                </figure>
+                                <span class="file-button">choose picture</span>
+                            </label>
+                        </div>
+                        <div class="form-group-flex">
+                            <div class="form-group">
+                                <input required type="text" name="produce_name" id="first_name" placeholder="Produce Name" />
+                            </div>
+                            <div class="form-group">
+                                <input required type="date" name="produce_date" id="last_name" placeholder="Produce Date" />
+                            </div>
+                            <div class="form-group">
+                                <input required type="text" name="produce_description" placeholder="Produce Description">
+                            </div>
+
+                        </div>
+                    </div>
+                </fieldset>
+
+                <h3>
+                    Category
+                </h3>
+                <fieldset>
+                    <div class="form-radio">
+                        <label for="category" class="label-radio">Select category</label>
+                        <div class="form-flex">
+                            <div class="form-radio">
+                                <input required type="radio" value="Fruits" name="category" id="category0" class="inputfile"/>
+                                <label for="category0">
+                                    <figure>
+                                        <img loading="lazy" src="static/image/category/fruit.jpg" alt="" class="" class="category0_image">
+                                    </figure>
+                                    <span>Fruits</span>
+                                </label>
+                            </div>
+
+                            <div class="form-radio">
+                                <input type="radio" value="Vegetables" name="category" id="category1" class="inputfile"/>
+                                <label for="category1">
+                                    <figure>
+                                        <img loading="lazy" src="static/image/category/vegetable.jpg" alt="" class="category1_image">
+                                    </figure>
+                                    <span>Vegetables</span>
+                                </label>
+                            </div>
+
+                            <div class="form-radio">
+                                <input type="radio" value="Pulses" name="category" id="category2" class="inputfile"/>
+                               <label for="category2">
+                                    <figure>
+                                        <img loading="lazy" src="static/image/category/pulses.jpg" alt="" class="category2_image">
+                                    </figure>
+                                    <span>Pulses</span>
+                                </label>
+							</div>
+
+							<div class="form-radio">
+                                <input type="radio" value="Grains" name="category" id="category3" class="inputfile"/>
+                                <label for="category3">
+                                    <figure>
+                                        <img loading="lazy" src="static/image/category/grains.jpg" alt="" class="category3_image">
+                                    </figure>
+                                    <span>Grains</span>
+                                </label>
+							</div>
+							
+							<div class="form-radio">
+                                <input type="radio" value="Spices" name="category" id="category4" class="inputfile"/>
+                                <label for="category4">
+                                    <figure>
+                                        <img loading="lazy" src="static/image/category/spices.jpg" alt="" class="category4_image">
+                                    </figure>
+                                    <span>Spices</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <h3>
+                    Address
+                </h3>
+                <fieldset>
+                    <div class="form-row form-input-flex">
+                        <div class="form-input">
+                            <input required type="number" step="0.01" name="produce_price" id="street_name" placeholder="Produce Price (in Rs.) upto two decimal places" />
+                        </div>
+                        <div class="form-input">
+                            <input required type="number" name="produce_quantity" min="1" id="street_number" placeholder="Produce Quantity" />
+                        </div>
+                    </div>
+                    <div class="form-row form-input-flex">
+                        <div class="form-input">
+                            <select required name="delivery_agency" id="country">
+								<option value="" disabled>Agency Name | Intracity Rates | Intercity Rates</option>
+								{% for agency in agencies %}
+								<option value="{{ agency[0] }}">{{ agency[1] + " | " + agency[2] + " | " + agency[3]}}</option>
+								{% endfor %}
+                            </select>
+                            <span class="select-icon"><i class="zmdi zmdi-caret-down"></i></span>
+                        </div>
+                    </div>
+                    <div class="form-row form-input-flex">
+                        <input type="submit" name="submit" class="btn btn-success pill-right" />
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+
+    </div>
+
+    <!-- JS -->
+    <script src="static/vendor/jquery/jquery.min.js"></script>
+    <script src="static/vendor/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="static/vendor/jquery-validation/dist/additional-methods.min.js"></script>
+    <script src="static/vendor/jquery-steps/jquery.steps.min.js"></script>
+    <script src="static/javascript/main.js"></script>
+</body>
+{% endblock %}
+{% include "footer.html" %}
+</html>
